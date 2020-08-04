@@ -34,11 +34,13 @@ export function getPercentage(
     fillPercentage = (parseFloat(cumulative) / baseCumulative) * 100;
   else if (cumulativeType === 'bid')
     fillPercentage = (parseFloat(cumulative) / baseCumulative) * 100;
-  else return;
+  else {
+    fillPercentage = 50;
+  }
 
   fillPercentage = Math.min(fillPercentage, 100);
   fillPercentage = Math.max(fillPercentage, 0);
-  return fillPercentage;
+  return fillPercentage * 10; //to lengthen
 }
 
 /**
@@ -59,6 +61,11 @@ export function getZeros(color: string) {
   for (let i = 0; i < length; i++) {
     data.push(
       <Row key={uuidv4()}>
+        <Sidebar
+          style={{
+            backgroundSize: '50% 100%',
+          }}
+        />
         <Cell>
           <Data>{'0.0000'}</Data>
         </Cell>
@@ -97,16 +104,17 @@ export function getZeros(color: string) {
  */
 export function getAsks(asks: number[][], baseCumulative: number) {
   const currentAsks = asks.map((ask: number[]) => {
-    let price: string[] = ask[0].toString().split('.');
-    if (!price[1]) price[1] = '00';
-    if (price[1].length === 1) price[1] = price[1] + '0';
+    const decimal = ask[0].toString().split('.')[1];
+    const length = decimal && decimal.length > 2 ? decimal.length : 2;
+    const fixedNumber = Number(ask[0].toString()).toFixed(length);
+    const price: string[] = fixedNumber.split('.');
+    const percentage = getPercentage(ask[1].toString(), 'ask', baseCumulative);
 
     return (
       <Row key={uuidv4()}>
         <Sidebar
           style={{
-            backgroundSize:
-              getPercentage(price[1], 'ask', baseCumulative) + '% 100%',
+            backgroundSize: percentage + '% 100%',
           }}
           ask="true"
         />
@@ -143,16 +151,17 @@ export function getAsks(asks: number[][], baseCumulative: number) {
  */
 export function getBids(bids: number[][], baseCumulative: number) {
   return bids.map((bid: number[]) => {
-    let price: string[] = bid[0].toString().split('.');
-    if (!price[1]) price[1] = '00';
-    if (price[1].length === 1) price[1] = price[1] + '0';
+    const decimal = bid[0].toString().split('.')[1];
+    const length = decimal && decimal.length > 2 ? decimal.length : 2;
+    const fixedNumber = Number(bid[0].toString()).toFixed(length);
+    const price: string[] = fixedNumber.split('.');
+    const percentage = getPercentage(bid[1].toString(), 'bid', baseCumulative);
 
     return (
       <Row key={uuidv4()}>
         <Sidebar
           style={{
-            backgroundSize:
-              getPercentage(price[1], 'bid', baseCumulative) + '% 100%',
+            backgroundSize: percentage + '% 100%',
           }}
           bid="true"
         />

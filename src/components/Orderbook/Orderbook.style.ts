@@ -154,6 +154,8 @@ export const Sidebar = styled.div<{ ask?: string; bid?: string }>`
   background-image: ${(props) =>
     props.ask
       ? 'linear-gradient(to left, #924a33 100%, white 0%);'
-      : 'linear-gradient(to left, #5b8a4b 100%, white 0%)'};
+      : props.bid
+      ? 'linear-gradient(to left, #5b8a4b 100%, white 0%)'
+      : 'linear-gradient(to left, #121d27 100%, white 0%)'};
   background-size: 0%;
 `;

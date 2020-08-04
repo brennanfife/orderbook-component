@@ -1,14 +1,15 @@
 import Head from 'next/head';
+import { Provider } from 'react-redux';
 
-import { AggregationProvider } from '../store/aggregation/Context';
+import store from '../store';
 import '../styles/globals.css';
 
 export default function MyApp({ Component, pageProps }) {
   <Head>
-    <title key="title">hello</title>
+    <title key="title">Orderbook Component</title>
     <meta charSet="UTF-8" />
 
-    <meta name="description" content={'OrderBook Component'} />
+    <meta name="description" content={'Orderbook Component'} />
     <meta
       name="viewport"
       content="width=device-width, initial-scale=1"
@@ -16,8 +17,8 @@ export default function MyApp({ Component, pageProps }) {
     />
   </Head>;
   return (
-    <AggregationProvider>
+    <Provider store={store}>
       <Component {...pageProps} />
-    </AggregationProvider>
+    </Provider>
   );
 }

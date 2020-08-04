@@ -1,30 +1,31 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# Notes
 
-## Getting Started
+## Technologies Used
 
-First, run the development server:
+### CCXT
 
-```bash
-npm run dev
-# or
-yarn dev
-```
+### React
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+### TypeScript
 
-You can start editing the page by modifying `pages/index.js`. The page auto-updates as you edit the file.
+### Redux
 
-## Learn More
+Initially, you may see that I started off using my preferred global state management system, the Context API. However, given the instructions said to use Redux, I made the switch. While Redux can be a bit boilerplate heavy, it may be a better solution give how fast values are changing in this context. If the app were to grow in state management, a potential solution would be to give Recoil a try.
 
-To learn more about Next.js, take a look at the following resources:
+### Next.js
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+Used for SSR for performance, SEO, etc.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
+### Emotion
 
-## Deploy on Vercel
+## Running
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/import?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+- Make sure you have the latest, stable version of node.
+- To install, run `npm install` and to run, run 'npm run start'
+- Please note that certain elements (i.e. scrollbar, button outlines) were kept in for accessibility reasons
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+## Potential Improvments / Things to note
+
+- Use a Websocket to make reads more fluid. CCXT's pro version comes with this support
+
+- Currently using level 2 for polling (i.e. const orderbook = await exchange.fetchOrderBook('BTC/USD')) for simplicity. Can use level 3 (const orderbook = await exchange.fetchOrderBook('BTC/USD', undefined, { 'level': 3 })) to pull in additional orders.

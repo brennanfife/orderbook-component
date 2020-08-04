@@ -1,10 +1,14 @@
-import { INCREMENT_AGGREGATION, DECREMENT_AGGREGATION } from './Constants';
-import { AggregationState, CounterActions } from './types';
+import { INCREMENT_AGGREGATION, DECREMENT_AGGREGATION } from '../constants';
+import { AggregationState, CounterActions } from '../types';
 
-export const AggLevels = ['0.01', '0.05', '0.10', '0.50', '1.00']; //could add in 2.5, 5.0, and 10.0 similar to coinbare pro
+const AggLevels = ['0.01', '0.05', '0.10', '0.50', '1.00']; //could add in 2.5, 5.0, and 10.0 similar to coinbare pro
+
+const intialState: AggregationState = {
+  aggregation: AggLevels[0],
+};
 
 export default function AggregationReducer(
-  state: AggregationState,
+  state: AggregationState = intialState,
   action: CounterActions
 ): AggregationState {
   switch (action.type) {

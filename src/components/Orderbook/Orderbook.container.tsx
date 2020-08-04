@@ -1,11 +1,25 @@
-import React, { useState, useContext } from 'react';
+import React, { useState } from 'react';
 import ccxt from 'ccxt';
+import { bindActionCreators, Dispatch, AnyAction } from 'redux';
+import { connect } from 'react-redux';
 
 import Orderbook from './Orderbook';
 import useInterval from '../../hooks/useInterval';
-import { AggregationContext } from '../../store/aggregation/Context';
+import { AppState } from '../../store';
+import {
+  incrementAggregation,
+  decrementAggregation,
+} from '../../store/actions';
 
-export default function OrderbookContainer() {
+function OrderbookContainer({
+  aggregation,
+  incrementAggregation,
+  decrementAggregation,
+}: {
+  aggregation: string;
+  incrementAggregation: () => any;
+  decrementAggregation: () => any;
+}) {
   const isRunning = true;
   const interval = 1000;
   const symbol = 'BTC/USD';
@@ -14,14 +28,12 @@ export default function OrderbookContainer() {
   const [spread, setSpread] = useState(0);
   const [askCumulative, setAskCumulative] = useState(0);
   const [bidCumulative, setBidCumulative] = useState(0);
-  const { state, dispatch } = useContext(AggregationContext);
-  const aggregation = state.aggregation;
-  const incrementAggregation = dispatch.incrementAggregation;
-  const decrementAggregation = dispatch.decrementAggregation;
-  console.log('decrementAggregation:', decrementAggregation);
 
-  const aggregateOrderBookSide = (orderbookSide: any, precision: number) => {
-    const result: any = [];
+  const aggregateOrderBookSide = (
+    orderbookSide: number[][],
+    precision: number
+  ) => {
+    const result: number[][] = [];
     const amounts: any = {};
     for (let i = 0; i < orderbookSide.length; i++) {
       const ask = orderbookSide[i];
@@ -42,7 +54,16 @@ export default function OrderbookContainer() {
     return result;
   };
 
-  const aggregateOrderBook = function (orderbook: any, precision: number) {
+  const aggregateOrderBook = function (
+    orderbook: {
+      asks: number[][];
+      bids: number[][];
+      datetime: any;
+      nonce: number | undefined;
+      timestamp: number | undefined;
+    },
+    precision: number
+  ) {
     let asks = aggregateOrderBookSide(orderbook['asks'], precision);
     let bids = aggregateOrderBookSide(orderbook['bids'], precision);
     return {
@@ -70,7 +91,7 @@ export default function OrderbookContainer() {
 
         const asks = aggOrderBook.asks;
         let askCumulative = 0;
-        asks.map((ask: any) => {
+        asks.map((ask: number[]) => {
           askCumulative += ask[1];
         });
         setAskCumulative(askCumulative);
@@ -78,7 +99,7 @@ export default function OrderbookContainer() {
 
         const bids = aggOrderBook.bids;
         let bidCumulative = 0;
-        bids.map((bid: any) => {
+        bids.map((bid: number[]) => {
           bidCumulative += bid[1];
         });
         setBidCumulative(bidCumulative);
@@ -102,3 +123,21 @@ export default function OrderbookContainer() {
     />
   );
 }
+
+function mapStateToProps(state: AppState) {
+  return {
+    aggregation: state.AggregationReducer.aggregation,
+  };
+}
+
+function mapDispatchToProps(dispatch: Dispatch<AnyAction>) {
+  return bindActionCreators(
+    {
+      incrementAggregation,
+      decrementAggregation,
+    },
+    dispatch
+  );
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(OrderbookContainer);

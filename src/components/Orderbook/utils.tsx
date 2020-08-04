@@ -11,16 +11,29 @@ import {
   Sidebar,
 } from './Orderbook.style';
 
+/**
+ * Get Percentage of market size against total cumulative
+ *
+ * @param cumulative
+ *   Cumulative amount to calculate
+ * @param  cumulativeType
+ *   Cumulative type (i.e. ask or bid)
+ *  @param  baseCumulative
+ *   Current total be measured against
+ *
+ * @returns fillPercentage
+ *   % amount of color to fill row
+ */
 export function getPercentage(
-  cumulative: any,
+  cumulative: string,
   cumulativeType: string,
-  baseCumulative: any
+  baseCumulative: number
 ) {
   let fillPercentage = 0;
   if (cumulativeType === 'ask')
-    fillPercentage = (cumulative / baseCumulative) * 100;
+    fillPercentage = (parseFloat(cumulative) / baseCumulative) * 100;
   else if (cumulativeType === 'bid')
-    fillPercentage = (cumulative / baseCumulative) * 100;
+    fillPercentage = (parseFloat(cumulative) / baseCumulative) * 100;
   else return;
 
   fillPercentage = Math.min(fillPercentage, 100);
@@ -28,6 +41,17 @@ export function getPercentage(
   return fillPercentage;
 }
 
+/**
+ * Called on init lo fill rows before waiting for incoming data
+ *
+ * TODO: REPLACE WITH SOME FORM OF CACHING
+ *
+ * @param color
+ *   What color to fill zeros with
+ *
+ * @returns data
+ *   An array of zeros, wrapped with Row div
+ */
 export function getZeros(color: string) {
   let data = [];
   let length = 50;
@@ -62,6 +86,15 @@ export function getZeros(color: string) {
   return data;
 }
 
+/**
+ * Get market ask orders
+ *
+ * @param asks
+ *   Currency market asks
+ *
+ * @returns currentAsks
+ *   An array of market asks in reverse order
+ */
 export function getAsks(asks: number[][], baseCumulative: number) {
   const currentAsks = asks.map((ask: number[]) => {
     let price: string[] = ask[0].toString().split('.');
@@ -99,6 +132,15 @@ export function getAsks(asks: number[][], baseCumulative: number) {
   return currentAsks.reverse();
 }
 
+/**
+ * Get market bid orders
+ *
+ * @param bids
+ *   Currency market bids
+ *
+ * @returns currentBids
+ *   An array of market bids
+ */
 export function getBids(bids: number[][], baseCumulative: number) {
   return bids.map((bid: number[]) => {
     let price: string[] = bid[0].toString().split('.');

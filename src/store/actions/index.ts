@@ -1,4 +1,4 @@
-import { INCREMENT_AGGREGATION, DECREMENT_AGGREGATION } from './Constants';
+import { INCREMENT_AGGREGATION, DECREMENT_AGGREGATION } from '../constants';
 
 export const incrementAggregation = () => {
   return {

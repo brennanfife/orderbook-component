@@ -2,7 +2,6 @@ import React from 'react';
 
 import { IOrderbook } from './types';
 import { getZeros, getAsks, getBids } from './utils';
-
 import {
   OrderbookWrapper,
   TitleBar,

@@ -145,3 +145,15 @@ export const Data = styled.div`
   text-align: left;
   word-break: normal;
 `;
+
+export const Sidebar = styled.div<{ ask?: string; bid?: string }>`
+  background-repeat: no-repeat;
+  width: 1rem;
+  content: '';
+  min-height: 100%;
+  background-image: ${(props) =>
+    props.ask
+      ? 'linear-gradient(to left, #924a33 100%, white 0%);'
+      : 'linear-gradient(to left, #5b8a4b 100%, white 0%)'};
+  background-size: 0%;
+`;

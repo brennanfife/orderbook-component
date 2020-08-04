@@ -1,8 +1,9 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import ccxt from 'ccxt';
 
 import Orderbook from './Orderbook';
 import useInterval from '../../hooks/useInterval';
+import { AggregationContext } from '../../store/aggregation/Context';
 
 export default function OrderbookContainer() {
   const isRunning = true;
@@ -11,7 +12,13 @@ export default function OrderbookContainer() {
   const [asks, setAsks] = useState<any>();
   const [bids, setBids] = useState<any>();
   const [spread, setSpread] = useState(0);
-  const aggregation = '0.01';
+  const [askCumulative, setAskCumulative] = useState(0);
+  const [bidCumulative, setBidCumulative] = useState(0);
+  const { state, dispatch } = useContext(AggregationContext);
+  const aggregation = state.aggregation;
+  const incrementAggregation = dispatch.incrementAggregation;
+  const decrementAggregation = dispatch.decrementAggregation;
+  console.log('decrementAggregation:', decrementAggregation);
 
   const aggregateOrderBookSide = (orderbookSide: any, precision: number) => {
     const result: any = [];
@@ -62,9 +69,19 @@ export default function OrderbookContainer() {
         );
 
         const asks = aggOrderBook.asks;
+        let askCumulative = 0;
+        asks.map((ask: any) => {
+          askCumulative += ask[1];
+        });
+        setAskCumulative(askCumulative);
         setAsks(asks);
 
         const bids = aggOrderBook.bids;
+        let bidCumulative = 0;
+        bids.map((bid: any) => {
+          bidCumulative += bid[1];
+        });
+        setBidCumulative(bidCumulative);
         setBids(bids);
         setSpread(orderbook.asks[0][0] - orderbook.bids[0][0]);
       })();
@@ -78,6 +95,10 @@ export default function OrderbookContainer() {
       bids={bids}
       spread={spread}
       aggregation={aggregation}
+      askCumulative={askCumulative}
+      bidCumulative={bidCumulative}
+      incrementAggregation={incrementAggregation}
+      decrementAggregation={decrementAggregation}
     />
   );
 }

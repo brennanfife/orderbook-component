@@ -1,29 +1,7 @@
 import { v4 as uuidv4 } from 'uuid';
 
-import {
-  Row,
-  Cell,
-  Data,
-  LightGreen,
-  DarkGreen,
-  LightRed,
-  DarkRed,
-  Sidebar,
-} from './Orderbook.style';
+import { Flex, Box } from '@chakra-ui/react';
 
-/**
- * Get Percentage of market size against total cumulative
- *
- * @param cumulative
- *   Cumulative amount to calculate
- * @param  cumulativeType
- *   Cumulative type (i.e. ask or bid)
- *  @param  baseCumulative
- *   Current total be measured against
- *
- * @returns fillPercentage
- *   % amount of color to fill row
- */
 export function getPercentage(
   cumulative: string,
   cumulativeType: string,
@@ -43,17 +21,82 @@ export function getPercentage(
   return fillPercentage * 10; //to lengthen
 }
 
-/**
- * Called on init lo fill rows before waiting for incoming data
- *
- * TODO: REPLACE WITH SOME FORM OF CACHING
- *
- * @param color
- *   What color to fill zeros with
- *
- * @returns data
- *   An array of zeros, wrapped with Row div
- */
+function Data(props: any) {
+  return (
+    <Box
+      display="inline"
+      fontSize="11px"
+      fontWeight="400"
+      lineHeight="1.5"
+      textAlign="left"
+      wordBreak="normal"
+      {...props}
+    >
+      {props.children}
+    </Box>
+  );
+}
+
+function Row(props: any) {
+  return (
+    <Flex
+      justifyContent="center"
+      alignItems="center"
+      cursor="pointer"
+      height="16px"
+      color="white"
+      _hover={{
+        backgroundColor: '#121d27',
+      }}
+      {...props}
+    >
+      {props.children}
+    </Flex>
+  );
+}
+
+function Sidebar(props: any) {
+  return (
+    <Flex
+      backgroundRepeat="no-repeat"
+      w="1rem"
+      content=""
+      minHeight="100%"
+      backgroundSize="0%"
+      bgGradient={
+        props.ask
+          ? 'linear(to left, red.700 100%, white 0%);'
+          : props.bid
+          ? 'linear(to left, green.700 100%, white 0%)'
+          : 'linear(to left, black 100%, white 0%)'
+      }
+      {...props}
+    >
+      {props.children}
+    </Flex>
+  );
+}
+
+function Cell(props: any) {
+  return (
+    <Flex
+      justifyContent="flex-end"
+      alignItems="center"
+      ml="1.8rem"
+      backgroundRepeat="no-repeat"
+      backgroundSize="0%"
+      textAlign="right"
+      fontSize="12px"
+      whiteSpace="pre"
+      pr={props.size ? '16px' : '3px'}
+      flex={props.price ? '1 1 30%' : props.size ? '1 1 32%' : '1 1 38%'}
+      {...props}
+    >
+      {props.children}
+    </Flex>
+  );
+}
+
 export function getZeros(color: string) {
   let data = [];
   let length = 50;
@@ -72,15 +115,19 @@ export function getZeros(color: string) {
         <Cell price="true">
           <Data>
             {color === 'green' ? (
-              <DarkGreen>
+              <Box color="green.700" display="inline-block">
                 {'0000.'}
-                <LightGreen>{'00'}</LightGreen>
-              </DarkGreen>
+                <Box color="green.300" display="inline-block">
+                  {'00'}
+                </Box>
+              </Box>
             ) : (
-              <DarkRed>
+              <Box color="red.700" display="inline-block">
                 {'0000.'}
-                <LightRed>{'00'}</LightRed>
-              </DarkRed>
+                <Box color="red.300" display="inline-block">
+                  {'00'}
+                </Box>
+              </Box>
             )}
           </Data>
         </Cell>
@@ -93,15 +140,6 @@ export function getZeros(color: string) {
   return data;
 }
 
-/**
- * Get market ask orders
- *
- * @param asks
- *   Currency market asks
- *
- * @returns currentAsks
- *   An array of market asks in reverse order
- */
 export function getAsks(asks: number[][], baseCumulative: number) {
   const currentAsks = asks.map((ask: number[]) => {
     const decimal = ask[0].toString().split('.')[1];
@@ -125,10 +163,12 @@ export function getAsks(asks: number[][], baseCumulative: number) {
 
         <Cell price="true">
           <Data>
-            <DarkRed>
+            <Box color="red.700" display="inline-block">
               {`${price[0]}.`}
-              <LightRed>{price[1]}</LightRed>
-            </DarkRed>
+              <Box color="red.300" display="inline-block">
+                {price[1]}
+              </Box>
+            </Box>
           </Data>
         </Cell>
         <Cell size="true">
@@ -140,15 +180,6 @@ export function getAsks(asks: number[][], baseCumulative: number) {
   return currentAsks.reverse();
 }
 
-/**
- * Get market bid orders
- *
- * @param bids
- *   Currency market bids
- *
- * @returns currentBids
- *   An array of market bids
- */
 export function getBids(bids: number[][], baseCumulative: number) {
   return bids.map((bid: number[]) => {
     const decimal = bid[0].toString().split('.')[1];
@@ -171,10 +202,12 @@ export function getBids(bids: number[][], baseCumulative: number) {
 
         <Cell price="true">
           <Data>
-            <DarkGreen>
+            <Box color="green.700" display="inline-block">
               {`${price[0]}.`}
-              <LightGreen>{price[1]}</LightGreen>
-            </DarkGreen>
+              <Box color="green.300" display="inline-block">
+                {price[1]}
+              </Box>
+            </Box>
           </Data>
         </Cell>
         <Cell size="true">

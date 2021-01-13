@@ -1,8 +1,9 @@
 import Head from 'next/head';
 import { Provider } from 'react-redux';
+import { ChakraProvider } from '@chakra-ui/react';
 
 import store from '../store';
-import '../styles/globals.css';
+import theme from '../styles/theme';
 
 export default function MyApp({ Component, pageProps }) {
   <Head>
@@ -18,7 +19,9 @@ export default function MyApp({ Component, pageProps }) {
   </Head>;
   return (
     <Provider store={store}>
-      <Component {...pageProps} />
+      <ChakraProvider theme={theme}>
+        <Component {...pageProps} />
+      </ChakraProvider>
     </Provider>
   );
 }
